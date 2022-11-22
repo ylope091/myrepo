@@ -1,0 +1,44 @@
+#' ---
+#' title: A Problem with Presidents; a data to information challenge.
+#' author: Yasser Lopez
+#' date: 2022-11-21
+#' ---
+
+library("stringr")
+library(vtable)
+data <- read.csv("C:/Users/ylopez/Downloads/presidents.csv", header=TRUE, stringsAsFactors=FALSE)
+data$year_of_birth <- with(
+  data, str_sub(data$BIRTH.DATE, - 4, - 1))
+data$year_of_death <- with(
+  data, str_sub(data$DEATH.DATE, - 4, - 1))
+data[, 6]  <- as.numeric(data[, 6])
+data[, 7]  <- as.numeric(data[, 7])
+data$lived_years <- with(
+  data, ifelse(is.na(data$year_of_death), 2022 - data$year_of_birth, data$year_of_death - data$year_of_birth))
+data$lived_months <- with(
+  data, ifelse(is.na(data$year_of_death), 2022 - data$year_of_birth, data$year_of_death - data$year_of_birth)*12)
+data$lived_days <- with(
+  data, ifelse(is.na(data$year_of_death), 2022 - data$year_of_birth, data$year_of_death - data$year_of_birth)*365)
+head(data[order(data$lived_years, decreasing=TRUE), ], 10)
+head(data[order(data$lived_years, decreasing=FALSE), ], 10)
+sumtable(data,summ=c('mean(x)','weighted.mean(x)','median(x)','max(x)','min(x)','sd(x)'))
+hist(data$lived_days)
+
+#' Conclusion: There are a few things we can look at when doing the analysis for
+#' the length of life. One of the first things I would think of is to compare the 
+#' of presidents to the general population. Usually, presidents are men of considerable
+#' social and economic power and with that we can assume that they have better access
+#' to medicine and the most state of the art treatments. Unfortunately, this is compicated
+#' a bit by the fact that we are looking at a data set across time to is difficult 
+#' to compare the life expectancy at any given year to the average of the presidents.
+#' With that being said, according to Harvard, the life expectancy in 1900, or roughly the halfway
+#' mark of the age of the Republic, was 47. The president at that time was William McKinley,
+#' President number 25. The average life expectancy of the Presidents is 72 while the 
+#' average one today is 77. Based, is that it looks like Presidents on average do
+#' live longer than the average person. My second question with from the data is 
+#' how is the distribution of life length for presidents. Looking at the histogram,
+#' it seems that there is a bell curve for the life length of presidents with more presidents
+#' living less than the median. As the life expectancy continues to increase, I expect the
+#' frequency to increase at points higher than the median and for the median to 
+#' increase as well.
+#
